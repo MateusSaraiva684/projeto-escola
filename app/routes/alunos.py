@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from app.database.session import get_db
 from app.services import aluno_service
 
-router = APIRouter()
+router = APIRouter(prefix="/alunos")
 templates = Jinja2Templates(directory="app/templates")
 
 
@@ -22,7 +22,7 @@ def criar(
 
 
 # 🔹 API - Listar alunos
-@router.get("/")
+@router.get("/api")
 def listar(db: Session = Depends(get_db)):
     return aluno_service.listar_alunos(db)
 
