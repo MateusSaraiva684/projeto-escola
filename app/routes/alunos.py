@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 
-from app.database.session import get_db
+from app.database.connection import get_db
 from app.services import aluno_service
+from app.models.aluno import Aluno
 
 router = APIRouter(prefix="/alunos")
 templates = Jinja2Templates(directory="app/templates")
@@ -21,9 +22,9 @@ def criar(
     return aluno_service.criar_aluno(db, nome, telefone, foto)
 
 
-# 🔹 API - Listar alunos
+# 🔹 API - Listar alunos (CORREÇÃO AQUI)
 @router.get("/api")
-def listar(db: Session = Depends(get_db)):
+def listar_api(db: Session = Depends(get_db)):
     return aluno_service.listar_alunos(db)
 
 
@@ -37,13 +38,13 @@ def pagina_alunos(request: Request, db: Session = Depends(get_db)):
     })
 
 
-# 🔹 WEB - Formulário de criação
+# 🔹 WEB - Formulário
 @router.get("/form")
 def form_aluno(request: Request):
     return templates.TemplateResponse("form_aluno.html", {"request": request})
 
 
-# 🔹 WEB - Criar aluno via formulário
+# 🔹 WEB - Criar aluno
 @router.post("/web")
 def criar_web(
     request: Request,
@@ -56,17 +57,22 @@ def criar_web(
     return RedirectResponse(url="/alunos/web", status_code=303)
 
 
-# 🔹 WEB - Deletar aluno (CORRIGIDO)
-@router.get("/deletar/id/{aluno_id}")
+# 🔹 WEB - Deletar
+@router.get("/deletar/{aluno_id}")
 def deletar_aluno(aluno_id: int, db: Session = Depends(get_db)):
-    aluno_service.deletar_aluno(db, aluno_id)
+    aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
+
+    if aluno:
+        db.delete(aluno)
+        db.commit()
+
     return RedirectResponse(url="/alunos/web", status_code=303)
 
 
-# 🔹 WEB - Form editar aluno (CORRIGIDO)
-@router.get("/editar/id/{aluno_id}")
+# 🔹 WEB - Form editar
+@router.get("/editar/{aluno_id}")
 def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get_db)):
-    aluno = aluno_service.buscar_aluno(db, aluno_id)
+    aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
 
     return templates.TemplateResponse("editar_aluno.html", {
         "request": request,
@@ -74,8 +80,8 @@ def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get
     })
 
 
-# 🔹 WEB - Atualizar aluno (CORRIGIDO)
-@router.post("/editar/id/{aluno_id}")
+# 🔹 WEB - Atualizar
+@router.post("/editar/{aluno_id}")
 def editar_aluno(
     aluno_id: int,
     nome: str = Form(...),
@@ -83,13 +89,16 @@ def editar_aluno(
     foto: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
-    aluno = aluno_service.buscar_aluno(db, aluno_id)
+    aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
 
     if aluno:
+        aluno.nome = nome
+        aluno.telefone = telefone
+
         if foto:
             caminho_foto = aluno_service.salvar_foto(foto)
             aluno.foto = caminho_foto
 
-        aluno_service.atualizar_aluno(db, aluno_id, nome, telefone)
+        db.commit()
 
     return RedirectResponse(url="/alunos/web", status_code=303)
