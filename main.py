@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from app.database.session import Base, engine
 from app.routes import alunos
 from fastapi.staticfiles import StaticFiles
@@ -10,4 +11,9 @@ app.include_router(alunos.router, prefix="/alunos")
 
 @app.get("/")
 def home():
+    return RedirectResponse(url="/alunos/web")
+
+@app.get("/")
+def home():
     return {"msg": "API funcionando"}
+    
