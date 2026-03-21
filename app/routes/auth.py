@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.database.session import get_db
 from app.models.usuario import Usuario
 
 router = APIRouter()
