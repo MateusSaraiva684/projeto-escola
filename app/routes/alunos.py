@@ -58,7 +58,7 @@ def criar_web(
 
 
 # 🔹 WEB - Deletar
-@router.get("/deletar/{aluno_id}")
+@router.get("/deletar/id/{aluno_id}")
 def deletar_aluno(aluno_id: int, db: Session = Depends(get_db)):
     aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
 
@@ -70,7 +70,7 @@ def deletar_aluno(aluno_id: int, db: Session = Depends(get_db)):
 
 
 # 🔹 WEB - Form editar
-@router.get("/editar/{aluno_id}")
+@router.get("/editar/id/{aluno_id}")
 def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get_db)):
     aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
 
@@ -81,7 +81,7 @@ def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get
 
 
 # 🔹 WEB - Atualizar
-@router.post("/editar/{aluno_id}")
+@router.post("/editar/id/{aluno_id}")
 def editar_aluno(
     aluno_id: int,
     nome: str = Form(...),
