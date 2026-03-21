@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alunos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand">🎓 Sistema Escolar</span>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">📚 Lista de Alunos</h2>
+
+    <div class="row">
+        {% for aluno in alunos %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+
+                {% if aluno.foto %}
+                <img src="{{ aluno.foto }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ aluno.nome }}</h5>
+                    <p class="card-text">📞 {{ aluno.telefone }}</p>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/alunos/editar/{{ aluno.id }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="/alunos/deletar/{{ aluno.id }}" class="btn btn-danger btn-sm">Deletar</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center">
+        <a href="/alunos/form" class="btn btn-primary">➕ Novo Aluno</a>
+    </div>
+</div>
+
+</body>
+</html>
