@@ -14,7 +14,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 Base.metadata.create_all(bind=engine)
 
 # 🔹 Rotas
-app.include_router(alunos.router)
+app.include_router(alunos.router, prefix="/alunos")
 
 # 🔹 Rota inicial (abre a página web)
 @app.get("/")

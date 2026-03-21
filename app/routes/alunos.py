@@ -7,7 +7,7 @@ from app.database.session import get_db
 from app.services import aluno_service
 from app.models.aluno import Aluno
 
-router = APIRouter(prefix="/alunos")
+router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
