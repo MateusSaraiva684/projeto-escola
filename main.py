@@ -4,7 +4,8 @@ from app.database.session import Base, engine
 from app.routes import alunos
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
+
+app = FastAPI(docs_url=None, redoc_url=None)  # 🔥 remove docs
 
 # 🔹 Static (CSS, imagens)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
