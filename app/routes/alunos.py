@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 
-from app.database.connection import get_db
+from app.database.session import get_db
 from app.services import aluno_service
 from app.models.aluno import Aluno
 
