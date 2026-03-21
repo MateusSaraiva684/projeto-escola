@@ -53,19 +53,18 @@ def criar_web(
     db: Session = Depends(get_db)
 ):
     aluno_service.criar_aluno(db, nome, telefone, foto)
-
     return RedirectResponse(url="/alunos/web", status_code=303)
 
 
-# 🔹 WEB - Deletar aluno
-@router.get("/deletar/{aluno_id}")
+# 🔹 WEB - Deletar aluno (CORRIGIDO)
+@router.get("/deletar/id/{aluno_id}")
 def deletar_aluno(aluno_id: int, db: Session = Depends(get_db)):
     aluno_service.deletar_aluno(db, aluno_id)
     return RedirectResponse(url="/alunos/web", status_code=303)
 
 
-# 🔹 WEB - Form editar aluno
-@router.get("/editar/{aluno_id}")
+# 🔹 WEB - Form editar aluno (CORRIGIDO)
+@router.get("/editar/id/{aluno_id}")
 def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get_db)):
     aluno = aluno_service.buscar_aluno(db, aluno_id)
 
@@ -75,8 +74,8 @@ def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get
     })
 
 
-# 🔹 WEB - Atualizar aluno
-@router.post("/editar/{aluno_id}")
+# 🔹 WEB - Atualizar aluno (CORRIGIDO)
+@router.post("/editar/id/{aluno_id}")
 def editar_aluno(
     aluno_id: int,
     nome: str = Form(...),
