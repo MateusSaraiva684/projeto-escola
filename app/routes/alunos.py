@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 # 🔹 API - Criar aluno
-@router.post("/")
+@router.post("/criar")
 def criar(
     nome: str = Form(...),
     telefone: str = Form(...),
