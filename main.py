@@ -20,3 +20,7 @@ app.include_router(alunos.router, prefix="/alunos")
 @app.get("/")
 def home():
     return RedirectResponse(url="/alunos/web")
+
+@app.get("/rotas")
+def listar_rotas():
+    return [r.path for r in app.routes]
