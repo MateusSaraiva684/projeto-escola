@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background: #111827;
+            color: white;
+            position: fixed;
+            width: 220px;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: block;
+            padding: 12px;
+        }
+
+        .sidebar a:hover {
+            background: #1f2937;
+            color: white;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4 class="p-3">🎓 Sistema</h4>
+    <a href="/alunos/dashboard"><i class="fa fa-chart-line"></i> Dashboard</a>
+    <a href="/alunos/web"><i class="fa fa-users"></i> Alunos</a>
+    <a href="/alunos/form"><i class="fa fa-plus"></i> Novo aluno</a>
+</div>
+
+<!-- CONTEÚDO -->
+<div class="content">
+
+    <h2 class="mb-4">📊 Dashboard</h2>
+
+    <!-- CARDS -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card shadow p-4">
+                <div class="card-title">Total de alunos</div>
+                <div class="card-value text-primary">{{ total }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow p-4">
+                <div class="card-title">Crescimento</div>
+                <div class="card-value text-success">+12%</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow p-4">
+                <div class="card-title">Atividade</div>
+                <div class="card-value text-warning">Alta</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRÁFICO -->
+    <div class="card shadow p-4 mt-4">
+        <h5 class="mb-3">📈 Alunos por mês</h5>
+        <canvas id="grafico"></canvas>
+    </div>
+
+    <!-- ÚLTIMOS -->
+    <div class="card shadow p-4 mt-4">
+        <h5 class="mb-3">🆕 Últimos alunos</h5>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aluno in ultimos %}
+                <tr>
+                    <td>{{ aluno.nome }}</td>
+                    <td>
+                        <a href="/alunos/editar/id/{{ aluno.id }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a href="/alunos/deletar/id/{{ aluno.id }}" class="btn btn-sm btn-outline-danger">Deletar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- CHART -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const ctx = document.getElementById('grafico');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai'],
+        datasets: [{
+            label: 'Alunos cadastrados',
+            data: [5, 12, 9, 18, 25],
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+</script>
+
+</body>
+</html>

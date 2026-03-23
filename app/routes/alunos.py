@@ -11,6 +11,26 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
+# 🔹 DASHBOARD (NOVO)
+@router.get("/dashboard")
+def dashboard(request: Request, db: Session = Depends(get_db)):
+    total = db.query(Aluno).count()
+
+    ultimos = db.query(Aluno)\
+        .order_by(Aluno.id.desc())\
+        .limit(5)\
+        .all()
+
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {
+            "request": request,
+            "total": total,
+            "ultimos": ultimos
+        }
+    )
+
+
 # 🔹 API - Criar aluno
 @router.post("/criar")
 def criar(
@@ -22,7 +42,7 @@ def criar(
     return aluno_service.criar_aluno(db, nome, telefone, foto)
 
 
-# 🔹 API - Listar alunos (CORREÇÃO AQUI)
+# 🔹 API - Listar alunos
 @router.get("/api")
 def listar_api(db: Session = Depends(get_db)):
     return aluno_service.listar_alunos(db)
