@@ -10,8 +10,7 @@ app = FastAPI(docs_url=None, redoc_url=None)  # 🔥 remove docs
 # 🔹 Static (CSS, imagens)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# 🔹 Criar tabelas
-Base.metadata.create_all(bind=engine)
+
 
 # 🔹 Rotas
 app.include_router(alunos.router, prefix="/alunos")
@@ -20,6 +19,11 @@ app.include_router(alunos.router, prefix="/alunos")
 @app.get("/")
 def home():
     return RedirectResponse(url="/alunos/web")
+
+@app.get("/init-db")
+def init_db():
+    Base.metadata.create_all(bind=engine)
+    return {"status": "ok"}    
 
 @app.get("/rotas")
 def listar_rotas():
