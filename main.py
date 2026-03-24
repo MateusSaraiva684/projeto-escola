@@ -21,7 +21,7 @@ app.include_router(auth.router)
 # 🔹 Rota inicial (abre a página web)
 @app.get("/")
 def home():
-    return RedirectResponse(url="/alunos/web")
+   return RedirectResponse(url="/alunos/")
 
 @app.get("/init-db")
 def init_db():
