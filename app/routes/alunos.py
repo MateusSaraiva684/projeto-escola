@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.database.connection import get_db
+from app.database.session import get_db
 from app.models.aluno import Aluno
 from app.routes.auth import get_current_user
 

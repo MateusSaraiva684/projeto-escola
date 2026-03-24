@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Form, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.database.connection import get_db
+from app.database.session import get_db
 from app.models.usuario import Usuario
 from app.core.security import (
     hash_password,
