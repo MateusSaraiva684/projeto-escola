@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from app.database.session import Base, engine
 from app.routes import alunos
+from app.routes import auth
 from fastapi.staticfiles import StaticFiles
 
 
@@ -14,6 +15,8 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # 🔹 Rotas
 app.include_router(alunos.router, prefix="/alunos")
+
+app.include_router(auth.router)
 
 # 🔹 Rota inicial (abre a página web)
 @app.get("/")

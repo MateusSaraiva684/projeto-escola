@@ -1,124 +1,67 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, Request
-from sqlalchemy.orm import Session
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
 
-from app.database.session import get_db
-from app.services import aluno_service
+from app.database.connection import get_db
 from app.models.aluno import Aluno
+from app.routes.auth import get_current_user
 
-router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
+router = APIRouter(prefix="/alunos", tags=["Alunos"])
 
 
-# 🔹 DASHBOARD (NOVO)
-@router.get("/dashboard")
-def dashboard(request: Request, db: Session = Depends(get_db)):
-    total = db.query(Aluno).count()
+# 🔒 LISTAR ALUNOS (PROTEGIDO)
+@router.get("/")
+def listar_alunos(request: Request, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    
+    if not user:
+        return RedirectResponse(url="/")
 
-    ultimos = db.query(Aluno)\
-        .order_by(Aluno.id.desc())\
-        .limit(5)\
-        .all()
+    alunos = db.query(Aluno).all()
 
-    return templates.TemplateResponse(
-        "dashboard.html",
+    return request.app.templates.TemplateResponse(
+        "alunos.html",
         {
             "request": request,
-            "total": total,
-            "ultimos": ultimos
+            "alunos": alunos,
+            "usuario": user
         }
     )
 
 
-# 🔹 API - Criar aluno
+# ➕ CRIAR ALUNO (PROTEGIDO)
 @router.post("/criar")
-def criar(
-    nome: str = Form(...),
-    telefone: str = Form(...),
-    foto: UploadFile = File(None),
-    db: Session = Depends(get_db)
-):
-    return aluno_service.criar_aluno(db, nome, telefone, foto)
-
-
-# 🔹 API - Listar alunos
-@router.get("/api")
-def listar_api(db: Session = Depends(get_db)):
-    return aluno_service.listar_alunos(db)
-
-
-# 🔹 WEB - Página de alunos
-@router.get("/web")
-def pagina_alunos(request: Request, db: Session = Depends(get_db)):
-    alunos = aluno_service.listar_alunos(db)
-    return templates.TemplateResponse("alunos.html", {
-        "request": request,
-        "alunos": alunos
-    })
-
-
-# 🔹 WEB - Formulário
-@router.get("/form")
-def form_aluno(request: Request):
-    return templates.TemplateResponse("form_aluno.html", {"request": request})
-
-
-# 🔹 WEB - Criar aluno
-@router.post("/web")
-def criar_web(
+def criar_aluno(
     request: Request,
     nome: str = Form(...),
-    telefone: str = Form(...),
-    foto: UploadFile = File(None),
-    db: Session = Depends(get_db)
+    idade: int = Form(...),
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
 ):
-    aluno_service.criar_aluno(db, nome, telefone, foto)
-    return RedirectResponse(url="/alunos/web", status_code=303)
+    if not user:
+        return RedirectResponse(url="/")
+
+    novo_aluno = Aluno(
+        nome=nome,
+        idade=idade
+    )
+
+    db.add(novo_aluno)
+    db.commit()
+
+    return RedirectResponse(url="/alunos", status_code=302)
 
 
-# 🔹 WEB - Deletar
-@router.get("/deletar/id/{aluno_id}")
-def deletar_aluno(aluno_id: int, db: Session = Depends(get_db)):
+# ❌ DELETAR ALUNO (PROTEGIDO)
+@router.get("/deletar/{aluno_id}")
+def deletar_aluno(aluno_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    
+    if not user:
+        return RedirectResponse(url="/")
+
     aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
 
     if aluno:
         db.delete(aluno)
         db.commit()
 
-    return RedirectResponse(url="/alunos/web", status_code=303)
-
-
-# 🔹 WEB - Form editar
-@router.get("/editar/id/{aluno_id}")
-def editar_aluno_form(aluno_id: int, request: Request, db: Session = Depends(get_db)):
-    aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-
-    return templates.TemplateResponse("editar_aluno.html", {
-        "request": request,
-        "aluno": aluno
-    })
-
-
-# 🔹 WEB - Atualizar
-@router.post("/editar/id/{aluno_id}")
-def editar_aluno(
-    aluno_id: int,
-    nome: str = Form(...),
-    telefone: str = Form(...),
-    foto: UploadFile = File(None),
-    db: Session = Depends(get_db)
-):
-    aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-
-    if aluno:
-        aluno.nome = nome
-        aluno.telefone = telefone
-
-        if foto:
-            caminho_foto = aluno_service.salvar_foto(foto)
-            aluno.foto = caminho_foto
-
-        db.commit()
-
-    return RedirectResponse(url="/alunos/web", status_code=303)
+    return RedirectResponse(url="/alunos", status_code=302)
