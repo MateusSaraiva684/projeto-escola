@@ -1,33 +1,40 @@
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
 from app.database.session import Base, engine
 from app.routes import alunos
 from app.routes import auth
-from fastapi.staticfiles import StaticFiles
 
+app = FastAPI(docs_url=None, redoc_url=None)
 
-app = FastAPI(docs_url=None, redoc_url=None)  # 🔥 remove docs
+# 🔹 Templates
+templates = Jinja2Templates(directory="app/templates")
+app.templates = templates
 
 # 🔹 Static (CSS, imagens)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-
-
 # 🔹 Rotas
 app.include_router(alunos.router)
-
 app.include_router(auth.router)
 
-# 🔹 Rota inicial (abre a página web)
-@app.get("/")
-def home():
-   return RedirectResponse(url="/alunos/")
+# 🔹 Página inicial (LOGIN)
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request}
+    )
 
+# 🔹 Inicializar banco (usar uma vez se precisar)
 @app.get("/init-db")
 def init_db():
     Base.metadata.create_all(bind=engine)
-    return {"status": "ok"}    
+    return {"status": "ok"}
 
+# 🔹 Debug de rotas
 @app.get("/rotas")
 def listar_rotas():
     return [r.path for r in app.routes]

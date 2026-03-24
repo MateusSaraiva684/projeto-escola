@@ -27,13 +27,13 @@ def login(
 
     token = criar_token({"user_id": user.id})
 
-    response = RedirectResponse(url="/alunos", status_code=status.HTTP_302_FOUND)
+    response = RedirectResponse(url="/alunos/", status_code=status.HTTP_302_FOUND)
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
-        secure=True,
         samesite="lax"
+        # ❌ removido secure=True (causava o problema)
     )
 
     return response
