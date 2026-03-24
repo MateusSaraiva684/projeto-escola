@@ -14,7 +14,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 # 🔹 Rotas
-app.include_router(alunos.router, prefix="/alunos")
+app.include_router(alunos.router)
 
 app.include_router(auth.router)
 
