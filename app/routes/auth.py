@@ -5,10 +5,9 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.models.usuario import Usuario
 from app.core.security import (
-    hash_password,
-    verify_password,
-    create_access_token,
-    verify_token
+    hash_senha,
+    verificar_senha,
+    criar_token
 )
 
 router = APIRouter()
@@ -23,17 +22,17 @@ def login(
 ):
     user = db.query(Usuario).filter(Usuario.email == email).first()
 
-    if not user or not verify_password(senha, user.senha):
+    if not user or not verificar_senha(senha, user.senha):
         return RedirectResponse(url="/?erro=1", status_code=status.HTTP_302_FOUND)
 
-    token = create_access_token({"user_id": user.id})
+    token = criar_token({"user_id": user.id})
 
     response = RedirectResponse(url="/alunos", status_code=status.HTTP_302_FOUND)
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
-        secure=True,      # 🔒 importante no Render (HTTPS)
+        secure=True,
         samesite="lax"
     )
 
@@ -56,7 +55,7 @@ def registrar(
     novo_usuario = Usuario(
         nome=nome,
         email=email,
-        senha=hash_password(senha)
+        senha=hash_senha(senha)
     )
 
     db.add(novo_usuario)
@@ -80,9 +79,12 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     if not token:
         return None
 
-    payload = verify_token(token)
+    try:
+        from jose import jwt
+        from app.core.config import settings
 
-    if not payload:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    except:
         return None
 
     user = db.query(Usuario).filter(Usuario.id == payload.get("user_id")).first()
