@@ -2,22 +2,25 @@
 <html>
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <h1>Login</h1>
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="senha" placeholder="Senha" required><br><br>
+        <button type="submit">Entrar</button>
+    </form>
 
-    <div class="card">
-        <form action="/login" method="post">
-            
-            <input type="text" name="email" placeholder="Email"><br><br>
-            <input type="password" name="senha" placeholder="Senha"><br><br>
+    <hr>
 
-            <button type="submit">Entrar</button>
-
-        </form>
-    </div>
+    <h2>Registrar</h2>
+    <form action="/registrar" method="post">
+        <input type="text" name="nome" placeholder="Nome" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="senha" placeholder="Senha" required><br><br>
+        <button type="submit">Criar conta</button>
+    </form>
 
 </body>
 </html>
