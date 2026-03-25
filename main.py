@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from app.database.session import Base, engine
 from app.routes import alunos
 from app.routes import auth
+from app.models.usuario import Usuario
 
 app = FastAPI(docs_url=None, redoc_url=None)
 
@@ -41,6 +42,6 @@ def listar_rotas():
 
 @app.get("/reset-db")
 def reset_db():
-    Usuario.__table__.drop(engine)
-    Usuario.__table__.create(engine)
+    Usuario.__table__.drop(engine, checkfirst=True)
+    Usuario.__table__.create(engine, checkfirst=True)
     return {"status": "resetado"}    
