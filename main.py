@@ -42,6 +42,10 @@ def listar_rotas():
 
 @app.get("/reset-db")
 def reset_db():
-    Usuario.__table__.drop(engine, checkfirst=True)
-    Usuario.__table__.create(engine, checkfirst=True)
-    return {"status": "resetado"}    
+    # 🔥 apaga TODAS as tabelas
+    Base.metadata.drop_all(bind=engine)
+
+    # 🔥 recria tudo do zero
+    Base.metadata.create_all(bind=engine)
+
+    return {"status": "banco resetado COMPLETO"} 
