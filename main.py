@@ -38,3 +38,9 @@ def init_db():
 @app.get("/rotas")
 def listar_rotas():
     return [r.path for r in app.routes]
+
+@app.get("/reset-db")
+def reset_db():
+    Usuario.__table__.drop(engine)
+    Usuario.__table__.create(engine)
+    return {"status": "resetado"}    
