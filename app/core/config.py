@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class Settings:
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./escola.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql:///./escola.db")
     SECRET_KEY: str = os.getenv("SECRET_KEY", "")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_HOURS: int = 8

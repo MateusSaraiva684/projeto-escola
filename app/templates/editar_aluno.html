@@ -1,55 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Editar Aluno</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Aluno — Sistema Escolar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; }
+        .card { border: none; border-radius: 14px; }
+        .foto-atual { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; }
+    </style>
 </head>
 <body>
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-        <span class="navbar-brand">🎓 Sistema Escolar</span>
+        <a class="navbar-brand" href="/alunos/web">
+            <i class="fa fa-school me-2"></i>Sistema Escolar
+        </a>
     </div>
 </nav>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-
             <div class="card shadow-lg p-4">
-                <h3 class="text-center mb-4">Editar Aluno</h3>
+                <h4 class="text-center mb-4">
+                    <i class="fa fa-user-edit me-2 text-warning"></i>Editar Aluno
+                </h4>
 
-                <form method="post" enctype="multipart/form-data">
+                {% if aluno.foto %}
+                <div class="text-center mb-3">
+                    <img src="{{ aluno.foto }}" class="foto-atual" alt="Foto atual de {{ aluno.nome }}">
+                    <p class="text-muted small mt-1">Foto atual</p>
+                </div>
+                {% endif %}
 
+                <!-- action aponta explicitamente para a rota POST de edição -->
+                <form action="/alunos/editar/id/{{ aluno.id }}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label class="form-label">Nome</label>
+                        <label class="form-label">Nome <span class="text-danger">*</span></label>
                         <input type="text" name="nome" class="form-control" value="{{ aluno.nome }}" required>
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label">Telefone</label>
+                        <label class="form-label">Telefone <span class="text-danger">*</span></label>
                         <input type="text" name="telefone" class="form-control" value="{{ aluno.telefone }}" required>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nova Foto</label>
-                        <input type="file" name="foto" class="form-control">
+                    <div class="mb-4">
+                        <label class="form-label">Nova foto <small class="text-muted">(deixe vazio para manter a atual)</small></label>
+                        <input type="file" name="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
                     </div>
-
-                    {% if aluno.foto %}
-                    <div class="mb-3 text-center">
-                        <img src="{{ aluno.foto }}" style="height: 150px; object-fit: cover;">
-                    </div>
-                    {% endif %}
-
                     <div class="d-flex justify-content-between">
-                        <a href="/alunos/web" class="btn btn-secondary">Voltar</a>
-                        <button type="submit" class="btn btn-warning">Atualizar</button>
+                        <a href="/alunos/web" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left me-1"></i> Voltar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fa fa-save me-1"></i> Atualizar
+                        </button>
                     </div>
-
                 </form>
             </div>
-
         </div>
     </div>
 </div>

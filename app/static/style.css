@@ -1,45 +1,25 @@
+/* Estilos globais complementares ao Bootstrap */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f8;
-    padding: 20px;
 }
 
-h1 {
-    text-align: center;
-}
-
+/* Cartão de aluno no listing */
 .card {
-    background: white;
-    padding: 15px;
-    margin: 15px auto;
-    width: 300px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
-.card img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
+/* Imagem circular nos cards pequenos */
+.card img.rounded-circle {
+    width: 80px;
+    height: 80px;
     object-fit: cover;
 }
 
-.card p {
-    margin: 5px 0;
-}
-input {
-    width: 90%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-button {
-    padding: 10px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
+input, select, textarea {
+    border-radius: 6px;
 }
