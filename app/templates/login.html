@@ -1,26 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
 
-    <h2>Login</h2>
-    <form action="/login" method="post">
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="senha" placeholder="Senha" required><br><br>
-        <button type="submit">Entrar</button>
-    </form>
+            {% if request.query_params.get('erro') == 'credenciais_invalidas' %}
+            <div class="alert alert-danger">E-mail ou senha incorretos.</div>
+            {% endif %}
+            {% if request.query_params.get('erro') == 'registro_falhou' %}
+            <div class="alert alert-warning">Não foi possível criar a conta. Tente outro e-mail.</div>
+            {% endif %}
+            {% if request.query_params.get('sucesso') == 'conta_criada' %}
+            <div class="alert alert-success">Conta criada com sucesso! Faça login.</div>
+            {% endif %}
 
-    <hr>
+            <div class="card shadow-sm p-4 mb-4">
+                <h4 class="mb-3">Entrar</h4>
+                <form action="/login" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" name="senha" class="form-control" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                </form>
+            </div>
 
-    <h2>Registrar</h2>
-    <form action="/registrar" method="post">
-        <input type="text" name="nome" placeholder="Nome" required><br><br>
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="senha" placeholder="Senha" required><br><br>
-        <button type="submit">Criar conta</button>
-    </form>
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-3">Criar conta</h4>
+                <form action="/registrar" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" name="nome" class="form-control" placeholder="Seu nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" name="senha" class="form-control" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Criar conta</button>
+                </form>
+            </div>
 
+        </div>
+    </div>
+</div>
 </body>
 </html>

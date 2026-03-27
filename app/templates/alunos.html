@@ -1,58 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <title>Alunos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
-
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-        <span class="navbar-brand">🎓 Sistema Escolar</span>
+        <span class="navbar-brand">Sistema Escolar</span>
+        <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
     </div>
 </nav>
-
 <div class="container mt-5">
-
-    <!-- BOTÃO DASHBOARD -->
     <div class="text-end mb-3">
-        <a href="/alunos/dashboard" class="btn btn-dark">
-            📊 Dashboard
-        </a>
+        <a href="/alunos/dashboard" class="btn btn-dark">Dashboard</a>
     </div>
-
-    <h2 class="mb-4 text-center">📚 Lista de Alunos</h2>
-
+    <h2 class="mb-4 text-center">Lista de Alunos</h2>
     <div class="row">
         {% for aluno in alunos %}
         <div class="col-md-4">
             <div class="card mb-4 shadow-sm">
-
                 {% if aluno.foto %}
-                <img src="{{ aluno.foto }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <img src="{{ aluno.foto }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Foto de {{ aluno.nome }}">
                 {% endif %}
-
                 <div class="card-body">
                     <h5 class="card-title">{{ aluno.nome }}</h5>
-                    <p class="card-text">📞 {{ aluno.telefone }}</p>
-
+                    <p class="card-text">{{ aluno.telefone }}</p>
                     <div class="d-flex justify-content-between">
                         <a href="/alunos/editar/id/{{ aluno.id }}" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="/alunos/deletar/id/{{ aluno.id }}" class="btn btn-danger btn-sm">Deletar</a>
+                        <!-- CORRIGIDO: deletar via POST para evitar deleção por GET acidental -->
+                        <form action="/alunos/deletar/id/{{ aluno.id }}" method="post" onsubmit="return confirm('Deletar {{ aluno.nome }}?')">
+                            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+                        </form>
                     </div>
                 </div>
-
             </div>
         </div>
         {% endfor %}
     </div>
-
-    <div class="text-center">
-        <a href="/alunos/form" class="btn btn-primary">➕ Novo Aluno</a>
+    {% if not alunos %}
+    <p class="text-center text-muted">Nenhum aluno cadastrado ainda.</p>
+    {% endif %}
+    <div class="text-center mt-2">
+        <a href="/alunos/form" class="btn btn-primary">Novo Aluno</a>
     </div>
-
 </div>
-
 </body>
 </html>

@@ -1,112 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <title>Dashboard</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Ícones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
     <style>
-        body {
-            background-color: #f4f6f9;
-        }
-
-        .sidebar {
-            height: 100vh;
-            background: #111827;
-            color: white;
-            position: fixed;
-            width: 220px;
-        }
-
-        .sidebar a {
-            color: #cbd5e1;
-            text-decoration: none;
-            display: block;
-            padding: 12px;
-        }
-
-        .sidebar a:hover {
-            background: #1f2937;
-            color: white;
-        }
-
-        .content {
-            margin-left: 220px;
-            padding: 20px;
-        }
-
-        .card {
-            border: none;
-            border-radius: 12px;
-        }
-
-        .card-title {
-            font-size: 14px;
-            color: gray;
-        }
-
-        .card-value {
-            font-size: 28px;
-            font-weight: bold;
-        }
+        body { background-color: #f4f6f9; }
+        .sidebar { height: 100vh; background: #111827; color: white; position: fixed; width: 220px; }
+        .sidebar a { color: #cbd5e1; text-decoration: none; display: block; padding: 12px; }
+        .sidebar a:hover { background: #1f2937; color: white; }
+        .content { margin-left: 220px; padding: 20px; }
+        .card { border: none; border-radius: 12px; }
+        .card-title { font-size: 14px; color: gray; }
+        .card-value { font-size: 28px; font-weight: bold; }
     </style>
 </head>
-
 <body>
-
-<!-- SIDEBAR -->
 <div class="sidebar">
-    <h4 class="p-3">🎓 Sistema</h4>
+    <h4 class="p-3">Sistema</h4>
     <a href="/alunos/dashboard"><i class="fa fa-chart-line"></i> Dashboard</a>
     <a href="/alunos/web"><i class="fa fa-users"></i> Alunos</a>
     <a href="/alunos/form"><i class="fa fa-plus"></i> Novo aluno</a>
+    <a href="/logout" style="position:absolute;bottom:20px;width:100%"><i class="fa fa-sign-out-alt"></i> Sair</a>
 </div>
-
-<!-- CONTEÚDO -->
 <div class="content">
-
-    <h2 class="mb-4">📊 Dashboard</h2>
-
-    <!-- CARDS -->
+    <h2 class="mb-4">Dashboard</h2>
     <div class="row">
-
         <div class="col-md-4">
             <div class="card shadow p-4">
                 <div class="card-title">Total de alunos</div>
                 <div class="card-value text-primary">{{ total }}</div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card shadow p-4">
-                <div class="card-title">Crescimento</div>
-                <div class="card-value text-success">+12%</div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow p-4">
-                <div class="card-title">Atividade</div>
-                <div class="card-value text-warning">Alta</div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- GRÁFICO -->
+    <!-- Últimos alunos -->
     <div class="card shadow p-4 mt-4">
-        <h5 class="mb-3">📈 Alunos por mês</h5>
-        <canvas id="grafico"></canvas>
-    </div>
-
-    <!-- ÚLTIMOS -->
-    <div class="card shadow p-4 mt-4">
-        <h5 class="mb-3">🆕 Últimos alunos</h5>
-
+        <h5 class="mb-3">Últimos alunos</h5>
         <table class="table">
             <thead>
                 <tr>
@@ -120,7 +51,10 @@
                     <td>{{ aluno.nome }}</td>
                     <td>
                         <a href="/alunos/editar/id/{{ aluno.id }}" class="btn btn-sm btn-outline-primary">Editar</a>
-                        <a href="/alunos/deletar/id/{{ aluno.id }}" class="btn btn-sm btn-outline-danger">Deletar</a>
+                        <!-- CORRIGIDO: deletar via POST -->
+                        <form action="/alunos/deletar/id/{{ aluno.id }}" method="post" style="display:inline" onsubmit="return confirm('Deletar {{ aluno.nome }}?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Deletar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -128,14 +62,16 @@
         </table>
     </div>
 
+    <!-- Gráfico -->
+    <div class="card shadow p-4 mt-4">
+        <h5 class="mb-3">Alunos cadastrados (últimos meses)</h5>
+        <canvas id="grafico"></canvas>
+    </div>
 </div>
 
-<!-- CHART -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 const ctx = document.getElementById('grafico');
-
 new Chart(ctx, {
     type: 'line',
     data: {
@@ -146,9 +82,11 @@ new Chart(ctx, {
             fill: true,
             tension: 0.4
         }]
+    },
+    options: {
+        responsive: true
     }
 });
 </script>
-
 </body>
 </html>
