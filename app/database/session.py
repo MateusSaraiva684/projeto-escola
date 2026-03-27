@@ -10,8 +10,19 @@ if not DATABASE_URL:
         "Exemplo: DATABASE_URL=postgresql://usuario:senha@host:5432/escola"
     )
 
+# psycopg3 requer o prefixo postgresql+psycopg://
+# Aceita tanto postgresql:// quanto postgres:// (formato do Render)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
+_is_local = any(h in DATABASE_URL for h in ("localhost", "127.0.0.1"))
+connect_args = {} if _is_local else {"sslmode": "require"}
+
 engine = create_engine(
     DATABASE_URL,
+    connect_args=connect_args,
     pool_pre_ping=True,
 )
 
