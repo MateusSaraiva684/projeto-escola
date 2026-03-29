@@ -1,5 +1,22 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# Script de inicialização do projeto
 
-echo "RODANDO START.SH CERTO 🔥"
+# Verifica se o .env existe
+if [ ! -f ".env" ]; then
+    echo "Arquivo .env não encontrado. Copiando .env.example..."
+    cp .env.example .env
+    echo "Edite o .env com suas configurações antes de continuar."
+    exit 1
+fi
 
-uvicorn main:app --host 0.0.0.0 --port $PORT --reload
+# Instala dependências se necessário
+if [ ! -d "venv" ]; then
+    echo "Criando ambiente virtual..."
+    python3 -m venv venv
+fi
+
+source venv/bin/activate
+pip install -r requirements.txt --quiet
+
+echo "Iniciando servidor..."
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
